@@ -50,34 +50,36 @@
     </div>
 
     <script>
-       
+       //setting api key and api url from openweathermap api 
         const apiKey = "f97bc9eb3be797fb989eb8fbdbc54977";
         const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
         const searchBox = document.querySelector(".search input");
         const searchBtn = document.querySelector(".search button");
         const WeatherIcon = document.querySelector(".weather-icon");
 
-        //to trigger the enter button 
+        //to trigger the enter button - when user clicks enter button also it will work fine
         document.querySelector(".search").addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
             searchBtn.click();
         }
         });
+        //city will be passed through the input given
         async function checkWeather(city){
-            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-            
-            if(response.status == 404){
-                document.querySelector(".error").style.display = "block";
-                document.querySelector(".weather").style.display = "none";
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);//city and api key will concatenate to the url
+            //if there is no city available as per user request it will throw 404 error
+            if(response.status == 404){ 
+                document.querySelector(".error").style.display = "block";//displaying invalid city name
+                document.querySelector(".weather").style.display = "none";//not displaying temperature
             }else{
-                var data = await response.json();
+                var data = await response.json();//getting the data for the particular city in json format
 
-                document.querySelector(".temp").innerHTML = Math.round(data.main.temp)+ "°C";
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp)+ "°C";//rounding the temperature
                 document.querySelector(".city").innerHTML = data.name;
                 document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
                 document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
 
+                //changes images according to the weather
                 if(data.weather[0].main == "Clouds"){
                     WeatherIcon.src = "Images/clouds.png";
                 }
@@ -91,12 +93,13 @@
                     WeatherIcon.src = "Images/mist.png";
                 }
                 
-                document.querySelector(".weather").style.display="block";
-                document.querySelector(".error").style.display="none";
+                document.querySelector(".weather").style.display="block";//displaying temp when there is no error
+                document.querySelector(".error").style.display="none";//not to display error message
                 }
             
         }
-        searchBtn.addEventListener("click",()=>{
+        //whean search button is clicked it will call the checkweather function by passing the city name given by the user  
+        searchBtn.addEventListener("click",()=>{ 
             checkWeather(searchBox.value);
         })
 
